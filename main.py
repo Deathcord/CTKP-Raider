@@ -22,15 +22,17 @@ with open("config.json", encoding='utf-8', errors='ignore') as f:
 config = configdata["Config"]
 
 
+	
 def Setup():
     os.system('cls')
     print(Fore.CYAN + 'CTKP-Raider Beta' + Fore.RESET)
     print(Fore.CYAN + '\n\n     1 >>' + Fore.RESET + ' 入室 (招待コード)' + Fore.RESET)
-    print(Fore.CYAN + '\n\n     2 >>' + Fore.RESET + ' スパマー (チャンネルID) (メッセージ) (量)' + Fore.RESET)
-    print(Fore.CYAN + '\n\n     3 >>' + Fore.RESET + ' フレンド爆撃 (ユーザーID)' + Fore.RESET)
-    print(Fore.CYAN + '\n\n     4 >>' + Fore.RESET + ' チェッカー')
-    print(Fore.CYAN + '\n\n     4 >>' + Fore.RESET + ' 絵文字を付ける (絵文字つけるurl)')
-    print(Fore.CYAN + '\n\n     4 >>' + Fore.RESET + ' 絵文字を消す (絵文字消すurl)')
+    print(Fore.CYAN + '\n\n     2 >>' + Fore.RESET + ' 離脱 (サーバーid)' + Fore.RESET)
+    print(Fore.CYAN + '\n\n     3 >>' + Fore.RESET + ' スパマー (チャンネルID) (メッセージ) (量)' + Fore.RESET)
+    print(Fore.CYAN + '\n\n     4 >>' + Fore.RESET + ' フレンド爆撃 (ユーザーID)' + Fore.RESET)
+    print(Fore.CYAN + '\n\n     5 >>' + Fore.RESET + ' チェッカー')
+    print(Fore.CYAN + '\n\n     6 >>' + Fore.RESET + ' 絵文字を付ける (絵文字つけるurl)')
+    print(Fore.CYAN + '\n\n     7 >>' + Fore.RESET + ' 絵文字を消す (絵文字消すurl)')
 
 def Start():
         command = list(input('\n\n   >> ').split(' '))
@@ -38,20 +40,23 @@ def Start():
                 invite = command[1]
                 threading.Thread(target=Join(invite)).start()
         if command[0] == "2":
+                guildid = command[1]
+                threading.Thread(target=Leave(guildid)).start()
+        if command[0] == "3":
                 channel = command[1]
                 message = command[2]
                 amount = command[3]
                 threading.Thread(target=Spammer(channel, message, amount)).start()
-        if command[0] == "3":
+        if command[0] == "4":
                 userid = command[1]
                 message = command[2]
                 amount = command[3]
                 threading.Thread(target=Friend(userid)).start()
-        if command[0] == "4":
-                threading.Thread(target=checker).start()
         if command[0] == "5":
-                threading.Thread(target=putemoji(command[1])).start()
+                threading.Thread(target=checker).start()
         if command[0] == "6":
+                threading.Thread(target=putemoji(command[1])).start()
+        if command[0] == "7":
                 threading.Thread(target=deleteemoji(command[1])).start()
 	
 
@@ -113,7 +118,20 @@ def Join(invite):
                 response = requests.post(f"https://discord.com/api/v9/invites/{invite}", headers=headers, cookies=getcookie())
                 print(response.status_code)
         
-
+def Leave(guild):
+    if config["proxy"] == True:
+        for token in tokens:
+                headers["authorization"] = token
+                requests.delete(f"https://discord.com/api/v9/users/@me/guilds/{guild}",headers=headers,proxies=proxies)
+                print(response.status_code)
+    else:
+        print("参加できなかった")
+	
+	
+    
+	
+	
+	
 def Spammer(channel, message, amount):
     if config["proxy"] == True:
         for token in tokens:
