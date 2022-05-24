@@ -44,6 +44,7 @@ def Setup():
     print(Fore.CYAN + '\n\n     1 >>' + Fore.RESET + ' 入室 (招待コード)' + Fore.RESET)
     print(Fore.CYAN + '\n\n     2 >>' + Fore.RESET + ' スパマー (チャンネルID) (メッセージ) (量)' + Fore.RESET)
     print(Fore.CYAN + '\n\n     3 >>' + Fore.RESET + ' フレンド爆撃 (ユーザーID)' + Fore.RESET)
+    print(Fore.CYAN + '\n\n     4 >>' + Fore.RESET + ' チェッカー')
 
 def Start():
         command = list(input('\n\n   >> ').split(' '))
@@ -60,6 +61,9 @@ def Start():
                 message = command[2]
                 amount = command[3]
                 threading.Thread(target=Friend(userid)).start()
+	if command[0] == "4":
+                threading.Thread(target=checker).start()
+	
 
 headers = {
         "user-agent": useragent(),
@@ -154,7 +158,25 @@ def Friend(userid):
         Setup()
         Start()
 
+def checker():
+    if config["proxy"] == True:
+        for token in token:
+              proxy = {
+                "http://": proxies
+                      }
+	header = {
+		"authorization": token
+	}
+	userdata = requests.get("https://discord.com/api/v9/users/@me",headers=headers).json()
+	print(Fore.CYAN + f"<name>{userdata['username']}#{userdata['discriminator']} <id>{userdata['id']} <mail>{userdata['email']} <token>{token} <from>{userdata['locale']}" + Fore.RESET)
 
+    else:
+        for token in tokens:
+                print(token + "このTOKENは無効です")
+        Setup()
+        Start()
+	
+	
 Setup()
 Start()
 
