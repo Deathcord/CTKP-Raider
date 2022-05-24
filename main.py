@@ -1,28 +1,68 @@
 import requests
 import asyncio
 import sys
-import requests
 import time
-import colorama
 from colorama import Fore, Style
 import threading
 import os
+import random
+import json
 
-with open("tokens.txt") as f:
-        tokens = f.read().split("\n")
+def useragent():
+	return random.choice(["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36",
+"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36",
+"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36",
+"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0",
+"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0",
+"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+"Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0",
+"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.109 Safari/537.36",
+"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15",
+"Mozilla/5.0 (X11; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0",
+"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:97.0) Gecko/20100101 Firefox/97.0",
+"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36",
+"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0",
+"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36",
+"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:98.0) Gecko/20100101 Firefox/98.0",
+"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0",
+"Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0",
+"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.39"])
+
+tokens = open('tokens.txt','r').read().splitlines()
+proxies = open('proxies.txt','r').read().splitlines()
+proxies = [{'https':'http://'+proxy} for proxy in proxies]
+
+with open("config.json", encoding='utf-8', errors='ignore') as f:
+    configdata = json.load(f, strict=False)
+config = configdata["Config"]
+
 
 def Setup():
     os.system('cls')
     print(Fore.CYAN + 'CTKP-Raider Beta' + Fore.RESET)
     print(Fore.CYAN + '\n\n     1 >>' + Fore.RESET + ' 入室 (招待コード)' + Fore.RESET)
+    print(Fore.CYAN + '\n\n     2 >>' + Fore.RESET + ' スパマー (チャンネルID) (メッセージ) (量)' + Fore.RESET)
+    print(Fore.CYAN + '\n\n     3 >>' + Fore.RESET + ' フレンド爆撃 (ユーザーID)' + Fore.RESET)
 
 def Start():
         command = list(input('\n\n   >> ').split(' '))
         if command[0] == "1":
                 invite = command[1]
                 threading.Thread(target=Join(invite)).start()
+        if command[0] == "2":
+                channel = command[1]
+                message = command[2]
+                amount = command[3]
+                threading.Thread(target=Spammer(channel, message, amount)).start()
+        if command[0] == "3":
+                userid = command[1]
+                message = command[2]
+                amount = command[3]
+                threading.Thread(target=Friend(userid)).start()
 
 headers = {
+        "user-agent": useragent(),
 	"x-super-properties": "eyJvcyI6IldpbmRvd3MiLCJicm93c2VyIjoiRmlyZWZveCIsImRldmljZSI6IiIsInN5c3RlbV9sb2NhbGUiOiJlbi1VUyIsImJyb3dzZXJfdXNlcl9hZ2VudCI6Ik1vemlsbGEvNS4wIChXaW5kb3dzIE5UIDEwLjA7IFdpbjY0OyB4NjQ7IHJ2OjkzLjApIEdlY2tvLzIwMTAwMTAxIEZpcmVmb3gvOTMuMCIsImJyb3dzZXJfdmVyc2lvbiI6IjkzLjAiLCJvc192ZXJzaW9uIjoiMTAiLCJyZWZlcnJlciI6IiIsInJlZmVycmluZ19kb21haW4iOiIiLCJyZWZlcnJlcl9jdXJyZW50IjoiIiwicmVmZXJyaW5nX2RvbWFpbl9jdXJyZW50IjoiIiwicmVsZWFzZV9jaGFubmVsIjoic3RhYmxlIiwiY2xpZW50X2J1aWxkX251bWJlciI6MTAwODA0LCJjbGllbnRfZXZlbnRfc291cmNlIjpudWxsfQ==",
         "x-context-properties": "eyJsb2NhdGlvbiI6IkpvaW4gR3VpbGQiLCJsb2NhdGlvbl9ndWlsZF9pZCI6IjQyNDQ0NzAyMzc2NTUyMDM4NiIsImxvY2F0aW9uX2NoYW5uZWxfaWQiOiI2MDI3MDU3MzIzMzYzNTMyOTAiLCJsb2NhdGlvbl9jaGFubmVsX3R5cGUiOjB9",
 	"sec-fetch-dest": "empty",
@@ -39,21 +79,20 @@ headers2 = {
     "accept": "*/*",
     "authority": "discord.com",
     "method": "POST",
-    "path": "/api/v9/auth/register",
     "scheme": "https",
     "origin": "discord.com",
-    "referer": "discord.com/register",
+    "referer": "discord.com/channels/@me",
     "x-debug-options": "bugReporterEnabled",
     "accept-language": "en-US,en;q=0.9",
     "connection": "keep-alive",
     "content-Type": "application/json",
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9003 Chrome/91.0.4472.164 Electron/13.4.0 Safari/537.36",
+    "user-agent": useragent(),
     "x-super-properties": "eyJvcyI6IldpbmRvd3MiLCJicm93c2VyIjoiRGlzY29yZCBDbGllbnQiLCJyZWxlYXNlX2NoYW5uZWwiOiJzdGFibGUiLCJjbGllbnRfdmVyc2lvbiI6IjEuMC45MDAzIiwib3NfdmVyc2lvbiI6IjEwLjAuMjIwMDAiLCJvc19hcmNoIjoieDY0Iiwic3lzdGVtX2xvY2FsZSI6ImVuLVVTIiwiY2xpZW50X2J1aWxkX251bWJlciI6MTA0OTY3LCJjbGllbnRfZXZlbnRfc291cmNlIjpudWxsfQ==",
     "sec-fetch-dest": "empty",
     "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-origin"
+    "sec-fetch-site": "same-origin",
+    "TE": "trailers"
 }
-
 
 def getcookie():
 	r1 = requests.get("https://discord.com")
@@ -67,14 +106,55 @@ def getfingerprint():
 	return fingerprint
 
 def Join(invite):
+    if config["proxy"] == True:
+        for token in tokens:
+                headers["authorization"] = token
+                headers["x-fingerprint"] = getfingerprint()
+                response = requests.post(f"https://discord.com/api/v9/invites/{invite}", headers=headers, cookies=getcookie(), proxies=proxies)
+                print(response.status_code)
+    else:
         for token in tokens:
                 headers["authorization"] = token
                 headers["x-fingerprint"] = getfingerprint()
                 response = requests.post(f"https://discord.com/api/v9/invites/{invite}", headers=headers, cookies=getcookie())
                 print(response.status_code)
-                time.sleep(2)
-                Setup()
-                Start()
+        
+
+def Spammer(channel, message, amount):
+    if config["proxy"] == True:
+        for token in tokens:
+                for _ in range(int(amount)):
+                        headers["authorization"] = token
+                        response = requests.post(f"https://discord.com/api/v9/channels/{channel}/messages", headers=headers, cookies=getcookie(), proxies=proxies, json = {'content': message,'nonce':'','tts':False})
+                        print(response.status_code)
+
+    else:
+        for token in tokens:
+                for _ in range(int(amount)):
+                        headers["authorization"] = token
+                        response = requests.post(f"https://discord.com/api/v9/channels/{channel}/messages", headers=headers, cookies=getcookie(), json = {'content': message,'nonce':'','tts':False})
+                        print(response.status_code)
+        Setup()
+        Start()
+
+def Friend(userid):
+    if config["proxy"] == True:
+        for token in tokens:
+                for _ in range(int(amount)):
+                        headers["authorization"] = token
+                        response = requests.put(f"https://discord.com/api/v9/users/@me/relationships/{userid}", headers=headers2, proxies=proxies, json = {})
+                        print(response.status_code)
+
+    else:
+        for token in tokens:
+                for _ in range(int(amount)):
+                        headers["authorization"] = token
+                        response = requests.post(f"https://discord.com/api/v9/users/@me/relationships/{userid}", headers=headers2, cookies=getcookie(), json = {})
+                        print(response.status_code)
+        Setup()
+        Start()
+
 
 Setup()
 Start()
+
