@@ -29,6 +29,8 @@ def Setup():
     print(Fore.CYAN + '\n\n     2 >>' + Fore.RESET + ' スパマー (チャンネルID) (メッセージ) (量)' + Fore.RESET)
     print(Fore.CYAN + '\n\n     3 >>' + Fore.RESET + ' フレンド爆撃 (ユーザーID)' + Fore.RESET)
     print(Fore.CYAN + '\n\n     4 >>' + Fore.RESET + ' チェッカー')
+    print(Fore.CYAN + '\n\n     4 >>' + Fore.RESET + ' 絵文字を付ける (絵文字つけるurl)')
+    print(Fore.CYAN + '\n\n     4 >>' + Fore.RESET + ' 絵文字を消す (絵文字消すurl)')
 
 def Start():
         command = list(input('\n\n   >> ').split(' '))
@@ -47,6 +49,10 @@ def Start():
                 threading.Thread(target=Friend(userid)).start()
         if command[0] == "4":
                 threading.Thread(target=checker).start()
+        if command[0] == "5":
+                threading.Thread(target=putemoji(command[1])).start()
+        if command[0] == "6":
+                threading.Thread(target=deleteemoji(command[1])).start()
 	
 
 headers = {
