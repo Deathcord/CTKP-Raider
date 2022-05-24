@@ -117,17 +117,21 @@ def Join(invite):
                 headers["x-fingerprint"] = getfingerprint()
                 response = requests.post(f"https://discord.com/api/v9/invites/{invite}", headers=headers, cookies=getcookie())
                 print(response.status_code)
-        
+        Setup()
+        Start()
+	
 def Leave(guild):
     if config["proxy"] == True:
         for token in tokens:
                 headers["authorization"] = token
-                requests.delete(f"https://discord.com/api/v9/users/@me/guilds/{guild}",headers=headers,proxies=proxies)
-                print(response.status_code)
-    else:
-        print("参加できなかった")
+                r = requests.delete(f"https://discord.com/api/v9/users/@me/guilds/{guild}",headers=headers,proxies=proxies)
+		if r.status_code == 200:
+			print("抜けました")
+		if r.status_code == 400:
+			print("抜けれなかった...TOKENが無効かもそれかサーバーidが無効")
 	
-	
+        Setup()
+        Start()
     
 	
 	
@@ -173,32 +177,35 @@ def checker():
 			"authorization": token
 		}
           userdata = requests.get("https://discord.com/api/v9/users/@me",headers=headers,proxies=proxies, cookies=getcookie()).json()
-          print(Fore.CYAN + f"<name>{userdata['username']}#{userdata['discriminator']} <id>{userdata['id']} <mail>{userdata['email']} <token>{token} <from>{userdata['locale']}" + Fore.RESET)
-        Setup()
+	  if r.status_code == 200:
+		print(Fore.CYAN + f"<name>{userdata['username']}#{userdata['discriminator']} <id>{userdata['id']} <mail>{userdata['email']} <token>{token} <from>{userdata['locale']}" + Fore.RESET)
+          if r.status_code == 400:
+		print("404 not found TOKENが無効")
+	Setup()
         Start()
-    else:
-                print("このTOKENが無効です")
 	
 	
 def putemoji(url):
     if config["proxy"] == True:
         for token in token:
 		r = requests.put(url,headers=headers,proxies=proxies, cookies=getcookie())
-		print(r.status_code)
+		if r.status_code == 200:
+			print("行けた")
+		if r.status_code == 400:
+			print("サーバーかチャンネルかメッセージか絵文字が見つからなかった")
         Setup()
         Start()
-    else:
-	print("できなかった")
-
+	
 def deleteemoji(url):
     if config["proxy"] == True:
 	for token in token:
 		r = requests.delete(url,headers=headers,proxies=proxy, cookies=getcookie())
-		print(r.status_code)
+		if r.status_code == 200:
+			print("行けた")
+		if r.status_code == 400:
+			print("サーバーかチャンネルかメッセージか絵文字が見つからなかった")
         Setup()
         Start()
-    else:
-	print("できなかった")
 	
 	
 Setup()
