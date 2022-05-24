@@ -148,12 +148,33 @@ def checker():
           header = {
 			"authorization": token
 		}
-          userdata = requests.get("https://discord.com/api/v9/users/@me",headers=headers,proxies=proxies).json()
+          userdata = requests.get("https://discord.com/api/v9/users/@me",headers=headers,proxies=proxies, cookies=getcookie()).json()
           print(Fore.CYAN + f"<name>{userdata['username']}#{userdata['discriminator']} <id>{userdata['id']} <mail>{userdata['email']} <token>{token} <from>{userdata['locale']}" + Fore.RESET)
         Setup()
         Start()
     else:
                 print("このTOKENが無効です")
+	
+	
+def putemoji(url):
+    if config["proxy"] == True:
+        for token in token:
+		r = requests.put(url,headers=headers,proxies=proxies, cookies=getcookie())
+		print(r.status_code)
+        Setup()
+        Start()
+    else:
+	print("できなかった")
+
+def deleteemoji(url):
+    if config["proxy"] == True:
+	for token in token:
+		r = requests.delete(url,headers=headers,proxies=proxy, cookies=getcookie())
+		print(r.status_code)
+        Setup()
+        Start()
+    else:
+	print("できなかった")
 	
 	
 Setup()
