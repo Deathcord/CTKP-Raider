@@ -171,7 +171,7 @@ def checker():
 	print(Fore.CYAN + f"<name>{userdata['username']}#{userdata['discriminator']} <id>{userdata['id']} <mail>{userdata['email']} <token>{token} <from>{userdata['locale']}" + Fore.RESET)
 
     else:
-                print(token + "このTOKENは無効です")
+                print("このTOKENが無効です")
         Setup()
         Start()
 	
