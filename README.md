@@ -5,3 +5,4 @@ made by [deathcord](https://github.com/Deathcord) & [zearadiscord](https://githu
 ```sh
 >> <number> <urlとかギルドid、チャンネルidとか>
 ```
+sendをしすぎるとaccountがbanされます
