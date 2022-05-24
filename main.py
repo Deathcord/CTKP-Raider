@@ -45,7 +45,7 @@ def Start():
                 message = command[2]
                 amount = command[3]
                 threading.Thread(target=Friend(userid)).start()
-	if command[0] == "4":
+        if command[0] == "4":
                 threading.Thread(target=checker).start()
 	
 
