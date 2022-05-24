@@ -145,14 +145,11 @@ def Friend(userid):
 def checker():
     if config["proxy"] == True:
         for token in token:
-              proxy = {
-                "http://": proxies
-                      }
-	header = {
-		"authorization": token
-	}
-	userdata = requests.get("https://discord.com/api/v9/users/@me",headers=headers).json()
-	print(Fore.CYAN + f"<name>{userdata['username']}#{userdata['discriminator']} <id>{userdata['id']} <mail>{userdata['email']} <token>{token} <from>{userdata['locale']}" + Fore.RESET)
+		header = {
+			"authorization": token
+		}
+		userdata = requests.get("https://discord.com/api/v9/users/@me",headers=headers,proxies=proxies).json()
+		print(Fore.CYAN + f"<name>{userdata['username']}#{userdata['discriminator']} <id>{userdata['id']} <mail>{userdata['email']} <token>{token} <from>{userdata['locale']}" + Fore.RESET)
 
     else:
                 print("このTOKENが無効です")
