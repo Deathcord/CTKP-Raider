@@ -124,7 +124,7 @@ def Leave(guild):
     if config["proxy"] == True:
         for token in tokens:
                 headers["authorization"] = token
-                r = requests.delete(f"https://discord.com/api/v9/users/@me/guilds/{guild}",headers=headers,proxies=proxies)
+                r = requests.delete(f"https://discord.com/api/v9/users/@me/guilds/{guild}",headers=headers,proxies=proxies, cookies=getcookie())
 		if r.status_code == 200:
 			print("抜けました")
 		if r.status_code == 400:
