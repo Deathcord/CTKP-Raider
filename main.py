@@ -70,7 +70,6 @@ headers = {
 	"sec-fetch-site": "same-origin",
 	"accept": "*/*",
 	"accept-language": "en-GB",
-	"user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) discord/0.0.16 Chrome/91.0.4472.164 Electron/13.4.0 Safari/537.36",
 	"TE": "trailers"
 }
 
